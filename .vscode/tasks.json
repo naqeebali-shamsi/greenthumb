@@ -11,11 +11,11 @@
                 "-LC:/Program Files/SDL2/lib",
                 "-o",
                 "greenthumb",
-                "include/*.cpp",
-                "src/*.cpp",
+                "${workspaceFolder}/src/*.cpp",
                 "-lmingw32",
                 "-lSDL2main",
-                "-lSDL2"
+                "-lSDL2",
+                "-lSDL2_ttf"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

@@ -4,6 +4,8 @@ FROM gcc:latest
 # Install necessary dependencies
 RUN apt-get update && apt-get install -y \
     libsdl2-dev \
+    libsdl2-ttf-dev \
+    libsdl2-image-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -14,7 +16,7 @@ WORKDIR /app
 COPY . .
 
 # Build the project
-RUN find . -name "*.cpp" -exec g++ -c -std=c++11 -I/usr/include/SDL2 -Iinclude {} \; && g++ -o greenthumb *.o -lSDL2
+RUN find . -name "*.cpp" -exec g++ -c -std=c++11 -I/usr/include/SDL2 -Iinclude {} \; && g++ -o greenthumb *.o -lSDL2 -lSDL2_ttf
 
 # Expose the port that your application listens on
 EXPOSE 8000
