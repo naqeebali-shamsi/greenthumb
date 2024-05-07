@@ -1,0 +1,30 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "build all cpp files",
+            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "args": [
+                "-std=c++11",
+                "-Iinclude",
+                "-IC:/Program Files/SDL2/include/SDL2",
+                "-LC:/Program Files/SDL2/lib",
+                "-o",
+                "greenthumb",
+                "include/*.cpp",
+                "src/*.cpp",
+                "-lmingw32",
+                "-lSDL2main",
+                "-lSDL2"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        }
+    ],
+    "version": "2.0.0"
+}
