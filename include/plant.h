@@ -1,22 +1,21 @@
-// Plant.h
 #pragma once
 #include <string>
-#include <SDL.h>
 
 class Plant {
 public:
-    Plant(std::string species, int x, int y);
-    void update();
-    void draw(SDL_Renderer* renderer, TTF_Font* font);
+    Plant(std::string name = "", double health = 100);
     void water();
-    void fertilize();
-    int getX() const;
-    int getY() const;
+    void addFertilizer();
+    void updateHealth();
     std::string getName() const;
+    std::string setName(std::string name);
+    double getHealth() const;
+    double getWaterLevel() const;
+    int getGrowthStage() const;
 
 private:
-    std::string species;
-    int health;
-    int x, y; // Position in the garden
+    std::string name;
+    double health;
     int growthStage;
+    double waterLevel;
 };

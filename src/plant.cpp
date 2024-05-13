@@ -1,59 +1,66 @@
-// Plant.cpp
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include "plant.h"
-#include "utils.h"
+#include <iostream>
+#include <random>
+#include <array>
+#include "Plant.h"
+#include "Namegen.h"
 
-Plant::Plant(std::string species, int x, int y)
-: species(species), health(100), x(x), y(y), growthStage(1) {}
-
-void Plant::update() {
-    // Implement growth and health effects based on environment
-    // Growth effect: increase health and growth stage based on growth stage
-    health += growthStage * 5;
-    growthStage++;
-    
-    // Environment effects: decrease health based on environment
-    int environment = rand() % 3;
-    if (environment == 0) health -= 5; // dry
-    else if (environment == 1) health -= 2; // normal
-    else health -= 1; // wet
+Plant::Plant(std::string name, double health) : health(health), growthStage(1), waterLevel(50)
+{
+    if (name.empty())
+    {
+        NameGen::Generator generator("sV i");
+        this->name = generator.toString();
+        std::cout << "Plant name: " << this->name << std::endl;
+    }
+    else
+    {
+        this->name = name;
+    }
 }
 
-void Plant::draw(SDL_Renderer* renderer, TTF_Font* font) {
-     // Drawing the plant rectangle
-    SDL_Rect plantRect = {x, y, 50, 50}; // Adjust dimensions as necessary
-    SDL_SetRenderDrawColor(renderer, 0, 128, 0, 255); // Set color to green
-    SDL_RenderFillRect(renderer, &plantRect);
-
-    // Draw the plant name and health
-    std::string info = species + " Health: " + std::to_string(health);
-    SDL_Color textColor = {0, 0, 0, 255}; // Text color black
-    SDL_Texture* textTexture = createTextTexture(renderer, font, info, textColor);
-    int textWidth, textHeight;
-    SDL_QueryTexture(textTexture, NULL, NULL, &textWidth, &textHeight);
-    SDL_Rect textRect = {x, y - 30, textWidth, textHeight};
-    SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
-    SDL_DestroyTexture(textTexture);
+void Plant::water()
+{
+    waterLevel += 20;
+    if (waterLevel > 100)
+        waterLevel = 100;
 }
 
-
-void Plant::water() {
-    health += 10; // Simple example
-}
-
-void Plant::fertilize() {
+void Plant::addFertilizer()
+{
     growthStage++;
 }
 
-int Plant::getX() const {
-    return x;
+void Plant::updateHealth()
+{
+    health += growthStage - (100 - waterLevel) * 0.1;
+    if (health > 100)
+        health = 100;
+    else if (health < 0)
+        health = 0;
 }
 
-int Plant::getY() const {
-    return y;
+std::string Plant::getName() const
+{
+    return name;
 }
 
-std::string Plant::getName() const {
-    return species;
+std::string Plant::setName(std::string name)
+{
+    this->name = name;
+    return name;
+}
+
+double Plant::getHealth() const
+{
+    return health;
+}
+
+double Plant::getWaterLevel() const
+{
+    return waterLevel;
+}
+
+int Plant::getGrowthStage() const
+{
+    return growthStage;
 }

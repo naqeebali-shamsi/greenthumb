@@ -22,4 +22,5 @@ private:
     SensorType type;
     double min_value;
     double max_value;
+    double lastValue;
 };
