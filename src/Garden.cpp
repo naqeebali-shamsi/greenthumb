@@ -8,6 +8,20 @@ Garden::Garden(std::shared_ptr<Environment> environment, std::shared_ptr<ILogger
     // This is because shared_from_this() can only be used after the object is fully constructed.
 }
 
+void Garden::waterAll() {
+    for (auto& plant : plants) {
+        plant->water();
+    }
+    std::cout << "All plants have been watered." << std::endl;
+}
+
+void Garden::fertilizeAll() {
+    for (auto& plant : plants) {
+        plant->addFertilizer();
+    }
+    std::cout << "Fertilizer added to all plants." << std::endl;
+}
+
 void Garden::addPlant(const std::shared_ptr<Plant>& plant) {
     plants.push_back(plant);
 }
@@ -30,6 +44,7 @@ void Garden::onEnvironmentChanged(const EnvironmentEvent& event) {
 
 void Garden::displayStatus() const {
     std::cout << "\nGarden Status:\n";
+    std::cout << "Current Weather: " << environment->weather.getWeatherString() << "\n";
     std::cout << "Environment - Temperature: " << environment->getTemperature()
               << "°C, Humidity: " << environment->getHumidity()
               << "%, Light Level: " << environment->getLightLevel() << " lux\n";

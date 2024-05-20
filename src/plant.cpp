@@ -18,15 +18,13 @@ Plant::Plant(std::string name, double health) : health(health), growthStage(1), 
     }
 }
 
-void Plant::water()
-{
+void Plant::water() {
     waterLevel += 20;
     if (waterLevel > 100)
         waterLevel = 100;
 }
 
-void Plant::addFertilizer()
-{
+void Plant::addFertilizer() {
     growthStage++;
 }
 

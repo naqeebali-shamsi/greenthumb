@@ -15,6 +15,8 @@ public:
     void renamePlant(const std::string& oldName, const std::string& newName);
     std::string assignName(std::string baseName);
     void initialize();
+    void waterAll();
+    void fertilizeAll();
     Environment& getEnvironment();
     virtual ~Garden() {}
 

@@ -10,22 +10,20 @@ Simulation::Simulation()
   tempSensor(SensorType::Temperature, 10, 30),
   moistureSensor(SensorType::Moisture, 30, 70),
   lightSensor(SensorType::Light, 200, 400) {
-    garden->initialize(); // Properly initialize Garden after its construction
+    garden->initialize();
 }
 
-void Simulation::setupSensors()
-{
+void Simulation::setupSensors() {
     tempSensor = Sensor(SensorType::Temperature, 10, 30);
     moistureSensor = Sensor(SensorType::Moisture, 30, 70);
     lightSensor = Sensor(SensorType::Light, 200, 400);
 }
 
-void Simulation::run()
-{
+void Simulation::run() {
     setupSensors();
+    taskScheduler.start();
 
-    while (true)
-    {
+    while (true) {
         garden->getEnvironment().setTemperature(tempSensor.readValue());
         garden->getEnvironment().setHumidity(moistureSensor.readValue());
         garden->getEnvironment().setLightLevel(lightSensor.readValue());

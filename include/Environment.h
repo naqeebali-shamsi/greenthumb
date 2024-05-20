@@ -3,7 +3,9 @@
 #include <random>
 #include <memory>
 #include "EnvironmentEvent.h"
+#include "Weather.h"
 
+class Weather; 
 class EnvironmentObserver {
 public:
     virtual void onEnvironmentChanged(const EnvironmentEvent& event) = 0;
@@ -11,6 +13,7 @@ public:
 
 class Environment {
 public:
+    Weather weather;
     Environment(double temperature = 22.0, double humidity = 50.0, double lightLevel = 300.0);
     void updateEnvironment();
     void registerObserver(std::shared_ptr<EnvironmentObserver> observer);
@@ -29,6 +32,5 @@ private:
     double temperature, humidity, lightLevel;
     std::default_random_engine generator;
     std::normal_distribution<double> temperatureChange, humidityChange, lightLevelChange;
-
     void checkForRandomEvent();
 };
