@@ -1,27 +1,26 @@
 {
     "version": "0.2.0",
     "configurations": [
-        
         {
             "name": "Run greenthumb.exe",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/greenthumb.exe",
+            "program": "${workspaceFolder}/build/GreenThumb",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": true,
-            "preLaunchTask": "build all cpp files",
+            "preLaunchTask": "build",
         },
         {
             "name": "C/C++: g++.exe build and debug active file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+            "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -38,7 +37,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: g++.exe build active file with SDL2"
+            "preLaunchTask": "build"
         }
     ]
 }

@@ -11,7 +11,6 @@
 
 using namespace NameGen;
 
-
 static std::mt19937 rng(static_cast<unsigned int>(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
 
 
@@ -342,17 +341,17 @@ Generator::Generator(const std::string &pattern, bool collapse_triples) {
     std::unique_ptr<Generator> last;
 
     std::stack<std::unique_ptr<Group>> stack;
-    std::unique_ptr<Group> top = make_unique<GroupSymbol>();
+    std::unique_ptr<Group> top = std::make_unique<GroupSymbol>();
 
     for (auto c : pattern) {
         switch (c) {
             case '<':
                 stack.push(std::move(top));
-                top = make_unique<GroupSymbol>();
+                top = std::make_unique<GroupSymbol>();
                 break;
             case '(':
                 stack.push(std::move(top));
-                top = make_unique<GroupLiteral>();
+                top = std::make_unique<GroupLiteral>();
                 break;
             case '>':
             case ')':
@@ -397,7 +396,7 @@ Generator::Generator(const std::string &pattern, bool collapse_triples) {
 
     std::unique_ptr<Generator> g = top->produce();
     if (collapse_triples) {
-        g = make_unique<Collapser>(std::move(g));
+        g = std::make_unique<Collapser>(std::move(g));
     }
     add(std::move(g));
 }
@@ -411,55 +410,44 @@ Generator::Group::Group(group_types_t type_) :
 
 void Generator::Group::add(std::unique_ptr<Generator>&& g)
 {
-	while (!wrappers.empty()) {
-		switch (wrappers.top()) {
-			case reverser:
-				g = make_unique<Reverser>(std::move(g));
-				break;
-			case capitalizer:
-				g = make_unique<Capitalizer>(std::move(g));
-				break;
-		}
-		wrappers.pop();
-	}
-	if (set.size() == 0) {
-		set.push_back(make_unique<Sequence>());
-	}
-	set.back()->add(std::move(g));
+    while (!wrappers.empty()) {
+        switch (wrappers.top()) {
+            case reverser:
+                g = std::make_unique<Reverser>(std::move(g));
+                break;
+            case capitalizer:
+                g = std::make_unique<Capitalizer>(std::move(g));
+                break;
+        }
+        wrappers.pop();
+    }
+    if (set.size() == 0) {
+        set.push_back(std::make_unique<Sequence>());
+    }
+    set.back()->add(std::move(g));
 }
 
 void Generator::Group::add(char c)
 {
-	std::string value(1, c);
-	std::unique_ptr<Generator> g = make_unique<Random>();
-	g->add(make_unique<Literal>(value));
-	Group::add(std::move(g));
+    std::string value(1, c);
+    std::unique_ptr<Generator> g = std::make_unique<Random>();
+    g->add(std::make_unique<Literal>(value));
+    Group::add(std::move(g));
 }
 
 std::unique_ptr<Generator> Generator::Group::produce()
 {
-	switch (set.size()) {
-		case 0:
-			return make_unique<Literal>("");
-		case 1:
-			return std::move(*set.begin());
-		default:
-			return make_unique<Random>(std::move(set));
-	}
+    switch (set.size()) {
+        case 0:
+            return std::make_unique<Literal>("");
+        case 1:
+            return std::move(*set.begin());
+        default:
+            return std::make_unique<Random>(std::move(set));
+    }
 }
 
-void Generator::Group::split()
-{
-	if (set.size() == 0) {
-		set.push_back(make_unique<Sequence>());
-	}
-	set.push_back(make_unique<Sequence>());
-}
 
-void Generator::Group::wrap(wrappers_t type)
-{
-	wrappers.push(type);
-}
 
 Generator::GroupSymbol::GroupSymbol() :
 	Group(group_types::symbol)
@@ -468,18 +456,32 @@ Generator::GroupSymbol::GroupSymbol() :
 
 void Generator::GroupSymbol::add(char c)
 {
-	std::string value(1, c);
-	std::unique_ptr<Generator> g = make_unique<Random>();
-	try {
-		static const auto& symbols = SymbolMap();
-		for (const auto& s : symbols.at(value)) {
-			g->add(make_unique<Literal>(s));
-		}
-	} catch (const std::out_of_range&) {
-		g->add(make_unique<Literal>(value));
-	}
-	Group::add(std::move(g));
+    std::string value(1, c);
+    std::unique_ptr<Generator> g = std::make_unique<Random>();
+    try {
+        static const auto& symbols = SymbolMap();
+        for (const auto& s : symbols.at(value)) {
+            g->add(std::make_unique<Literal>(s));
+        }
+    } catch (const std::out_of_range&) {
+        g->add(std::make_unique<Literal>(value));
+    }
+    Group::add(std::move(g));
 }
+
+void Generator::Group::split()
+{
+    if (set.size() == 0) {
+        set.push_back(std::make_unique<Sequence>());
+    }
+    set.push_back(std::make_unique<Sequence>());
+}
+
+void Generator::Group::wrap(wrappers_t type)
+{
+    wrappers.push(type);
+}
+
 
 Generator::GroupLiteral::GroupLiteral() :
 	Group(group_types::literal)
@@ -488,39 +490,31 @@ Generator::GroupLiteral::GroupLiteral() :
 
 std::wstring towstring(const std::string & s)
 {
-	const char *cs = s.c_str();
-	size_t wn = std::mbsrtowcs(nullptr, &cs, 0, nullptr);
+    const char *cs = s.c_str();
+    size_t wn = std::mbsrtowcs(nullptr, &cs, 0, nullptr);
 
-	if (wn == static_cast<size_t>(-1)) {
-		return L"";
-	}
+    if (wn == static_cast<size_t>(-1)) {
+        return L"";
+    }
 
-	std::vector<wchar_t> buf(wn);
-	cs = s.c_str();
-	wn = std::mbsrtowcs(buf.data(), &cs, wn, nullptr);
+    std::vector<wchar_t> buf(wn + 1);
+    cs = s.c_str();
+    std::mbsrtowcs(buf.data(), &cs, wn + 1, nullptr);
 
-	if (wn == static_cast<size_t>(-1)) {
-		return L"";
-	}
-
-	return std::wstring(buf.data(), wn);
+    return std::wstring(buf.data(), wn);
 }
 
 std::string tostring(const std::wstring & s)
 {
-	const wchar_t *cs = s.c_str();
-	size_t wn = std::wcsrtombs(nullptr, &cs, 0, nullptr);
+    const wchar_t *cs = s.c_str();
+    size_t wn = std::wcsrtombs(nullptr, &cs, 0, nullptr);
 
-	if (wn == static_cast<size_t>(-1)) {
-		return "";
-	}
+    if (wn == static_cast<size_t>(-1)) {
+        return "";
+    }
 
-	std::vector<char> buf(wn);
-	wn = std::wcsrtombs(buf.data(), &cs, wn, nullptr);
+    std::vector<char> buf(wn + 1);
+    std::wcsrtombs(buf.data(), &cs, wn + 1, nullptr);
 
-	if (wn == static_cast<size_t>(-1)) {
-		return "";
-	}
-
-	return std::string(buf.data(), wn);
+    return std::string(buf.data(), wn);
 }

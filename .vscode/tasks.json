@@ -2,23 +2,51 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "build all cpp files",
-            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "label": "configure",
+            "command": "cmake",
             "args": [
-                "-std=c++11",
-                "-Iinclude",
-                "${workspaceFolder}/src/*.cpp",
-                "-o",
-                "${workspaceFolder}/greenthumb",
-                "-lmingw32"
+                "-S",
+                ".",
+                "-B",
+                "build"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "label": "build",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "build"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "dependsOn": "configure",
             "problemMatcher": [
                 "$gcc"
+            ]
+        },
+        {
+            "type": "shell",
+            "label": "clean",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "build",
+                "--target",
+                "clean-all"
             ],
-            "group": "build"
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
         }
     ],
     "version": "2.0.0"
