@@ -2,22 +2,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run greenthumb.exe",
+            "name": "Run GreenThumb.exe",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/GreenThumb",
+            "program": "${workspaceFolder}/build/Debug/GreenThumb.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": true,
-            "preLaunchTask": "build",
+            "preLaunchTask": "build"
         },
         {
             "name": "C/C++: g++.exe build and debug active file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
+            "program": "${workspaceFolder}/build/Debug/${fileBasenameNoExtension}.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

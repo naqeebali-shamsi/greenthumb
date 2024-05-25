@@ -46,5 +46,6 @@ _deps
 build/
 
 # Misc
-*.txt
+*.log
+op.txt
 *.py

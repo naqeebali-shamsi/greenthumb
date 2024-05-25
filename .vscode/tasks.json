@@ -1,14 +1,15 @@
 {
+    "version": "2.0.0",
     "tasks": [
         {
             "type": "shell",
-            "label": "configure",
-            "command": "cmake",
+            "label": "install-dependencies",
+            "command": "conan",
             "args": [
-                "-S",
+                "install",
                 ".",
-                "-B",
-                "build"
+                "--build=missing",
+                "--output-folder=build"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -18,14 +19,30 @@
         },
         {
             "type": "shell",
+            "label": "configure",
+            "command": "cmake",
+            "args": [
+                "..",
+                "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/build/build/generators/conan_toolchain.cmake",
+                "-DCMAKE_BUILD_TYPE=Release"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "group": "build",
+            "dependsOn": "install-dependencies",
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
             "label": "build",
             "command": "cmake",
             "args": [
                 "--build",
-                "build"
+                "."
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}/build"
             },
             "group": "build",
             "dependsOn": "configure",
@@ -39,15 +56,14 @@
             "command": "cmake",
             "args": [
                 "--build",
-                "build",
+                ".",
                 "--target",
                 "clean-all"
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}/build"
             },
             "problemMatcher": []
         }
-    ],
-    "version": "2.0.0"
+    ]
 }
